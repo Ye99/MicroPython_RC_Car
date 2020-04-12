@@ -1,4 +1,7 @@
 import machine
+from micropython import const
+_pause_in_stop_ms = const(100)
+
 import time
 import socket
 
@@ -67,7 +70,7 @@ def turn_right() -> None:
 def stop() -> None:
     en_right.off()
     en_left.off()
-    time.sleep_ms(100)
+    time.sleep_ms(_pause_in_stop_ms)
 
 
 def start() -> None:
@@ -75,7 +78,6 @@ def start() -> None:
     en_left.on()
 
 while True:
-    time.sleep_ms(2)
     data, addr = sock.recvfrom(1024)
     key = data.decode()
     print(key)
