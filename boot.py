@@ -4,7 +4,7 @@
 import uos
 # Make machine available in repl
 import machine
-from machine import reset
+from machine import reset as r
 # uos.dupterm(None, 1) # disable REPL on UART(0)
 import gc
 

@@ -76,11 +76,13 @@ def start() -> None:
     en_right.on()
     en_left.on()
 
+_valid_commands = ["f", "b", "s", "l", "r"]
+
 def execute_command(command) -> None:
     print(command)
 
     global _current_command
-    if (_current_command != "s" and command != _current_command):
+    if (command in _valid_commands and _current_command != "s" and command != _current_command):
         stop()
         time.sleep_ms(_pause_in_stop_ms) # pause to reduce impact to gear
         _current_command = command
@@ -94,6 +96,12 @@ def execute_command(command) -> None:
     elif command == "s":
         print("stop")
         stop()
+    elif command == "l":
+        print("turn left")
+        turn_left()
+    elif command == "r":
+        print("turn right")
+        turn_right()
 
 
 while True:
