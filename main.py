@@ -28,9 +28,10 @@ def right_forward() -> None:
 
 
 def forward() -> None:
-    start()
+    stop()
     left_forward()
     right_forward()
+    start()
 
 
 def left_backward() -> None:
@@ -43,26 +44,30 @@ def right_backward() -> None:
 
 
 def backwoard() -> None:
-    start()
+    stop()
     left_backward()
     right_backward()
+    start()
 
 
 def turn_left() -> None:
-    start()
+    stop()
     left_forward()
     right_backward()
+    start()
 
 
 def turn_right() -> None:
-    start()
+    stop()
     right_forward()
     left_backward()
+    start()
 
 
 def stop() -> None:
     en_right.off()
     en_left.off()
+    time.sleep_ms(100)
 
 
 def start() -> None:
