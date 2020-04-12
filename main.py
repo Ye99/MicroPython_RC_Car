@@ -1,5 +1,11 @@
 import machine
 import time
+import socket
+
+UDP_IP = "10.0.0.31"
+UDP_PORT = 6789
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind((UDP_IP, UDP_PORT))
 
 # right side
 en_right = machine.Pin(5, machine.Pin.OUT)
@@ -21,7 +27,7 @@ def right_forward() -> None:
     in4.off()
 
 
-def foward() -> None:
+def forward() -> None:
     start()
     left_forward()
     right_forward()
@@ -63,6 +69,20 @@ def start() -> None:
     en_right.on()
     en_left.on()
 
+while True:
+    time.sleep_ms(2)
+    data, addr = sock.recvfrom(1024)
+    key = data.decode()
+    print(key)
+    if key == "f":
+        print("forward")
+        forward()
+    if key == "b":
+        print("backward")
+        backwoard()
+
+
+"""
 stop()
 time.sleep(1)
 foward()
@@ -74,5 +94,7 @@ time.sleep(3)
 turn_left()
 time.sleep(3)
 stop()
+"""
+
 
 
