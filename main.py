@@ -80,7 +80,7 @@ def execute_command(command) -> None:
     print(command)
 
     global _current_command
-    if (command != _current_command):
+    if (_current_command != "s" and command != _current_command):
         stop()
         time.sleep_ms(_pause_in_stop_ms) # pause to reduce impact to gear
         _current_command = command
