@@ -1,6 +1,6 @@
 import machine
 from micropython import const
-_pause_in_stop_ms = const(100)
+_pause_in_stop_ms = const(200)
 
 import time
 import socket
@@ -9,6 +9,10 @@ UDP_IP = "10.0.0.31"
 UDP_PORT = 6789
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((UDP_IP, UDP_PORT))
+
+# Initial command is stop state.
+# Use this to add pause if new command is different to current command, in order to reduce gear impact.
+_current_command = b"s"
 
 # right side
 en_right = machine.Pin(5, machine.Pin.OUT)
@@ -31,7 +35,6 @@ def right_forward() -> None:
 
 
 def forward() -> None:
-    stop()
     left_forward()
     right_forward()
     start()
@@ -47,21 +50,18 @@ def right_backward() -> None:
 
 
 def backwoard() -> None:
-    stop()
     left_backward()
     right_backward()
     start()
 
 
 def turn_left() -> None:
-    stop()
     left_forward()
     right_backward()
     start()
 
 
 def turn_right() -> None:
-    stop()
     right_forward()
     left_backward()
     start()
@@ -70,23 +70,37 @@ def turn_right() -> None:
 def stop() -> None:
     en_right.off()
     en_left.off()
-    time.sleep_ms(_pause_in_stop_ms)
 
 
 def start() -> None:
     en_right.on()
     en_left.on()
 
+def execute_command(command) -> None:
+    print(command)
+
+    global _current_command
+    if (command != _current_command):
+        stop()
+        time.sleep_ms(_pause_in_stop_ms) # pause to reduce impact to gear
+        _current_command = command
+
+    if command == "f":
+        print("forward")
+        forward()
+    elif command == "b":
+        print("backward")
+        backwoard()
+    elif command == "s":
+        print("stop")
+        stop()
+
+
 while True:
     data, addr = sock.recvfrom(1024)
     key = data.decode()
-    print(key)
-    if key == "f":
-        print("forward")
-        forward()
-    if key == "b":
-        print("backward")
-        backwoard()
+    execute_command(key)
+
 
 
 """
